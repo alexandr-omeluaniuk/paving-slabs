@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
+import { LINE } from './constants/Tools';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -17,12 +18,17 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function ToolsPanel() {
+function ToolsPanel(props) {
     const classes = useStyles();
+    const { onToolSelected, tool, toolState } = props;
+    console.log(tool);
+    console.log(toolState);
     return (
             <div className={classes.root}>
                 <Tooltip title={'Линия'}>
-                    <IconButton color="secondary">
+                    <IconButton color="secondary" onClick={() => {
+                        onToolSelected(LINE);
+                    }}>
                         <Icon>timeline</Icon>
                     </IconButton>
                 </Tooltip>

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import clsx from 'clsx';
 import { Stage } from 'react-konva';
 import ToolsPanel from './ToolsPanel';
 import DrawLayer from './DrawLayer';
@@ -6,6 +7,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import { LINE, LineState } from './constants/Tools';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -24,6 +26,12 @@ const useStyles = makeStyles(theme => ({
         borderRadius: `${theme.spacing(1)}px`,
         border: '1px solid #e2e2e2',
         padding: theme.spacing(1)
+    },
+    toolMode: {
+        boxShadow: theme.shadows[2],
+        '&:hover': {
+            cursor: 'pointer'
+        }
     }
 }));
 
@@ -33,8 +41,28 @@ function CAD() {
     
     const [stageWidth, setStateWidth] = React.useState(0);
     const [stageHeight, setStateHeight] = React.useState(0);
+    const [tool, setTool] = React.useState(null);
+    const [toolState, setToolState] = React.useState(null);
     
     let stageContainerRef = React.createRef();
+    
+    const onToolSelected = (t) => {
+        setTool(t);
+        if (t === LINE) {
+            setToolState(new LineState());
+        }
+    };
+    
+    const onStageMouseUp = (e) => {
+        if (tool === LINE) {
+            const coords = e.target.getPointerPosition();
+            if (!toolState.startPoint) {
+                toolState.startPoint = coords;
+            } else {
+                toolState.endPoint = coords;
+            }
+        }
+    };
     
     useEffect(() => {
         if (stageContainerRef.current) {
@@ -44,15 +72,17 @@ function CAD() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stageContainerRef.current]);
     
+    const stageContainerStyleStyle = clsx({
+        [classes.stageContainer]: true,
+        [classes.toolMode]: tool
+    });
     return (
             <Card className={classes.root}>
-                <CardHeader title="Калькулятор тротуарной плитки">
-    
-                </CardHeader>
+                <CardHeader title="Калькулятор тротуарной плитки"/>
                 <CardContent className={classes.content}>
-                    <ToolsPanel />
-                    <div className={classes.stageContainer} ref={stageContainerRef}>
-                        <Stage width={stageWidth} height={stageHeight}>
+                    <ToolsPanel onToolSelected={onToolSelected} tool={tool} toolState={toolState}/>
+                    <div className={stageContainerStyleStyle} ref={stageContainerRef}>
+                        <Stage width={stageWidth} height={stageHeight} onMouseUp={onStageMouseUp}>
                             <DrawLayer/>
                         </Stage>
                     </div>

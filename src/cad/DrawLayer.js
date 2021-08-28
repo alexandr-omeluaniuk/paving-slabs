@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import React from 'react';
 import { Layer, Rect, Circle, Line } from 'react-konva';
 
 function DrawLayer() {
+    
+    const [content, setContent] = React.useState(null);
+    
     return (
             <Layer>
-                <Rect width={50} height={50} fill="red" />
-                <Circle x={200} y={200} stroke="black" radius={50} />
+                {content}
             </Layer>
     );
 }
