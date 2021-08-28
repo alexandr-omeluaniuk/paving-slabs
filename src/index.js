@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import CAD from './cad/CAD';
+import PavingSlabs from './app/PavingSlabs';
 import reportWebVitals from './reportWebVitals';
 
 import Spinner from './component/Spinner';
@@ -9,7 +9,7 @@ import Spinner from './component/Spinner';
 function Application() {
     return (
             <Suspense fallback={(<Spinner open={true} />)}>
-                <CAD />
+                <PavingSlabs />
             </Suspense>
     );
 }
