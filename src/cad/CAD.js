@@ -6,6 +6,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import Backdrop from '@material-ui/core/Backdrop';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -23,13 +24,18 @@ const useStyles = makeStyles(theme => ({
         flex: 1,
         borderRadius: `${theme.spacing(1)}px`,
         border: '1px solid #e2e2e2',
-        padding: theme.spacing(1)
+        padding: theme.spacing(1),
+        zIndex: 2000,
+        backgroundColor: 'white'
     },
     toolMode: {
         boxShadow: theme.shadows[2],
         '&:hover': {
             cursor: 'pointer'
         }
+    },
+    backdrop: {
+        zIndex: 1000
     }
 }));
 
@@ -60,16 +66,19 @@ function CAD() {
         [classes.toolMode]: tool
     });
     return (
-            <Card className={classes.root}>
-                <CardHeader title="Калькулятор тротуарной плитки"/>
-                <CardContent className={classes.content}>
-                    <ToolsPanel onToolSelected={onToolSelected} tool={tool}/>
-                    <div className={stageContainerStyleStyle} ref={stageContainerRef}>
-                        <DrawStage stageWidth={stageWidth} stageHeight={stageHeight} tool={tool}/>
-                    </div>
-                </CardContent>
-            </Card>
-            
+            <React.Fragment>
+                <Card className={classes.root}>
+                    <CardHeader title="Калькулятор тротуарной плитки"/>
+                    <CardContent className={classes.content}>
+                        <ToolsPanel onToolSelected={onToolSelected} tool={tool}/>
+                        <div className={stageContainerStyleStyle} ref={stageContainerRef}>
+                            <DrawStage stageWidth={stageWidth} stageHeight={stageHeight} tool={tool} setTool={setTool}/>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Backdrop className={classes.backdrop} open={tool ? true : false}>
+                </Backdrop>
+            </React.Fragment>
     );
 }
 

@@ -8,8 +8,23 @@ import { Line } from 'react-konva';
 
 export const LINE = "LINE";
 
-export class LineState {
+class State {
+    clone() {
+        console.log('OVERRIDE ME');
+    }
+    
+    getELement() {
+        console.log('OVERRIDE ME');
+    }
+    
+    isCompleted() {
+        console.log('OVERRIDE ME');
+    }
+}
+
+export class LineState extends State {
     constructor() {
+        super();
         this.points = [];
         this.tempCoord = null;
     }
@@ -36,5 +51,9 @@ export class LineState {
                     <Line points={linePoints} key={new Date().getTime()} strokeWidth={1} stroke={'black'}/>
             );
         }
+    }
+    
+    isCompleted() {
+        return this.points.length === 2;
     }
 }

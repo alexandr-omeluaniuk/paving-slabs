@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import React from 'react';
-import { Stage, Layer } from 'react-konva';
-import { LINE } from '../constants/Tools';
+import React, { useEffect } from 'react';
+import { Stage } from 'react-konva';
+import { LINE, LineState } from '../constants/Tools';
+import PersistLayer from '../layer/PersistLayer';
+import TempLayer from '../layer/TempLayer';
 
 function DrawStage(props) {
-    const { tool, stageWidth, stageHeight } = props;
+    const { tool, stageWidth, stageHeight, setTool } = props;
     
     const [toolState, setToolState] = React.useState(null);
     const [content, setContent] = React.useState([]);
@@ -24,7 +26,7 @@ function DrawStage(props) {
     };
     
     const onStageMouseMove = (e) => {
-        if (tool && e.target && e.target.getPointerPosition) {
+        if (toolState && tool && e.target && e.target.getPointerPosition) {
             const coords = e.target.getPointerPosition();
             if (tool === LINE) {
                 toolState.tempCoord = coords;
@@ -33,11 +35,33 @@ function DrawStage(props) {
         }
     };
     
+    useEffect(() => {
+        if (tool === LINE) {
+            setToolState(new LineState());
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tool]);
+    
+    useEffect(() => {
+        if (toolState && toolState.isCompleted()) {
+            const newContent = [];
+            content.forEach(el => {
+                newContent.push(el);
+            });
+            newContent.push(toolState.getElement());
+            setToolState(null);
+            setContent(newContent);
+            setTool(null);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [toolState]);
+    
+    
+    console.log('render');
     return (
             <Stage width={stageWidth} height={stageHeight} onMouseUp={onStageMouseUp} onMouseMove={onStageMouseMove}>
-            <Layer>
-                {content}
-            </Layer>
+                <PersistLayer content={content}/>
+                <TempLayer toolState={toolState}/>
             </Stage>
     );
 }
