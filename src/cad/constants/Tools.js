@@ -63,9 +63,21 @@ export class LineState extends State {
     getElement() {
         let binding = this._getBinding();
         if (binding) {
-            
+            return this._getBindingLine();
         } else {
             return this._getLine();
+        }
+    }
+    
+    _getBindingLine() {
+        const startPoint = this.points[0];
+        const endPoint = this.points[1];
+        let deltaX = endPoint.x - startPoint.x;
+        let deltaY = endPoint.y - startPoint.y;
+        if (deltaX > deltaY) {
+            return <Line points={[startPoint.x, startPoint.y, endPoint.x, startPoint.y]} key={new Date().getTime()} strokeWidth={1} stroke={'black'}/>;
+        } else {
+            return <Line points={[startPoint.x, startPoint.y, startPoint.x, endPoint.y]} key={new Date().getTime()} strokeWidth={1} stroke={'black'}/>;
         }
     }
     
