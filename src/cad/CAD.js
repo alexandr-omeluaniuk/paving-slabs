@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
-import { Stage } from 'react-konva';
 import ToolsPanel from './ToolsPanel';
-import DrawLayer from './DrawLayer';
+import DrawStage from './stages/DrawStage';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import { LINE, LineState } from './constants/Tools';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -42,36 +40,11 @@ function CAD() {
     const [stageWidth, setStateWidth] = React.useState(0);
     const [stageHeight, setStateHeight] = React.useState(0);
     const [tool, setTool] = React.useState(null);
-    const [toolState, setToolState] = React.useState(null);
     
     let stageContainerRef = React.createRef();
     
     const onToolSelected = (t) => {
         setTool(t);
-        if (t === LINE) {
-            setToolState(new LineState());
-        }
-    };
-    
-    const onStageMouseUp = (e) => {
-        console.log(e);
-        if (tool && e.target && e.target.getPointerPosition) {
-            if (tool === LINE) {
-                const coords = e.target.getPointerPosition();
-                toolState.points.push(coords);
-                setToolState(toolState.clone());
-            }
-        }
-    };
-    
-    const onStageMouseMove = (e) => {
-        if (tool && e.target && e.target.getPointerPosition) {
-            const coords = e.target.getPointerPosition();
-            if (tool === LINE) {
-                toolState.tempCoord = coords;
-                setToolState(toolState.clone());
-            }
-        }
     };
     
     useEffect(() => {
@@ -90,11 +63,9 @@ function CAD() {
             <Card className={classes.root}>
                 <CardHeader title="Калькулятор тротуарной плитки"/>
                 <CardContent className={classes.content}>
-                    <ToolsPanel onToolSelected={onToolSelected} tool={tool} toolState={toolState}/>
+                    <ToolsPanel onToolSelected={onToolSelected} tool={tool}/>
                     <div className={stageContainerStyleStyle} ref={stageContainerRef}>
-                        <Stage width={stageWidth} height={stageHeight} onMouseUp={onStageMouseUp} onMouseMove={onStageMouseMove}>
-                            <DrawLayer toolState={toolState}/>
-                        </Stage>
+                        <DrawStage stageWidth={stageWidth} stageHeight={stageHeight} tool={tool}/>
                     </div>
                 </CardContent>
             </Card>
