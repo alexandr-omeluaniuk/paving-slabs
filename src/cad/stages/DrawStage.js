@@ -10,7 +10,7 @@ import PersistLayer from '../layer/PersistLayer';
 import TempLayer from '../layer/TempLayer';
 
 function DrawStage(props) {
-    const { tool, stageWidth, stageHeight, setTool } = props;
+    const { tool, stageWidth, stageHeight, setInfo } = props;
     
     const [toolState, setToolState] = React.useState(null);
     const [content, setContent] = React.useState([]);
@@ -31,6 +31,7 @@ function DrawStage(props) {
             if (tool === LINE) {
                 toolState.tempCoord = coords;
                 setToolState(toolState.clone());
+                setInfo(toolState.getInfo());
             }
         }
     };
@@ -49,9 +50,9 @@ function DrawStage(props) {
                 newContent.push(el);
             });
             newContent.push(toolState.getElement());
-            setToolState(null);
+            setToolState(new LineState());
             setContent(newContent);
-            setTool(null);
+            setInfo('');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [toolState]);

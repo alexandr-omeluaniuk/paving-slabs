@@ -24,6 +24,10 @@ class State {
     isCompleted() {
         console.log('OVERRIDE ME');
     }
+    
+    getInfo() {
+        console.log('OVERRIDE ME');
+    }
 }
 
 export class LineState extends State {
@@ -67,6 +71,17 @@ export class LineState extends State {
         } else {
             return this._getLine();
         }
+    }
+    
+    getInfo() {
+        if (this.tempCoord && this.points.length > 0) {
+            const startPoint = this.points[0];
+            const deltaX = Math.abs(this.tempCoord.x - startPoint.x);
+            const deltaY = Math.abs(this.tempCoord.y - startPoint.y);
+            const length = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+            return `${parseFloat(length).toFixed(2)} м`;
+        }
+        return '';
     }
     
     _getBindingLine() {

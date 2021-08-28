@@ -7,6 +7,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import Backdrop from '@material-ui/core/Backdrop';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,6 +35,12 @@ const useStyles = makeStyles(theme => ({
     },
     backdrop: {
         zIndex: 1000
+    },
+    infoChip: {
+        zIndex: 2001,
+        position: 'absolute',
+        bottom: theme.spacing(6),
+        right: theme.spacing(5)
     }
 }));
 
@@ -43,6 +50,7 @@ function CAD() {
     const [stageWidth, setStateWidth] = React.useState(0);
     const [stageHeight, setStateHeight] = React.useState(0);
     const [tool, setTool] = React.useState(null);
+    const [info, setInfo] = React.useState('');
     
     let stageContainerRef = React.createRef();
     
@@ -69,11 +77,12 @@ function CAD() {
                     <CardContent className={classes.content}>
                         <ToolsPanel onToolSelected={onToolSelected} tool={tool}/>
                         <div className={stageContainerStyleStyle} ref={stageContainerRef}>
-                            <DrawStage stageWidth={stageWidth} stageHeight={stageHeight} tool={tool} setTool={setTool}/>
+                            <DrawStage stageWidth={stageWidth} stageHeight={stageHeight} tool={tool} setInfo={setInfo}/>
                         </div>
+                        {tool && info ? <Chip label={info} className={classes.infoChip}/> : null}
                     </CardContent>
                 </Card>
-                <Backdrop className={classes.backdrop} open={tool ? true : false}>
+                <Backdrop className={classes.backdrop} open={tool ? true : false} onClick={() => setTool(null)}>
                 </Backdrop>
             </React.Fragment>
     );
