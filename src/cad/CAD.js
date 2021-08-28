@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import ToolsPanel from './ToolsPanel';
 import DrawStage from './stages/DrawStage';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -22,9 +22,7 @@ const useStyles = makeStyles(theme => ({
     },
     stageContainer: {
         flex: 1,
-        borderRadius: `${theme.spacing(1)}px`,
         border: '1px solid #e2e2e2',
-        padding: theme.spacing(1),
         zIndex: 2000,
         backgroundColor: 'white'
     },
@@ -41,7 +39,6 @@ const useStyles = makeStyles(theme => ({
 
 function CAD() {
     const classes = useStyles();
-    const theme = useTheme();
     
     const [stageWidth, setStateWidth] = React.useState(0);
     const [stageHeight, setStateHeight] = React.useState(0);
@@ -55,8 +52,8 @@ function CAD() {
     
     useEffect(() => {
         if (stageContainerRef.current) {
-            setStateWidth(stageContainerRef.current.offsetWidth - theme.spacing(2));
-            setStateHeight(stageContainerRef.current.offsetHeight - theme.spacing(1));
+            setStateWidth(stageContainerRef.current.offsetWidth);
+            setStateHeight(stageContainerRef.current.offsetHeight);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stageContainerRef.current]);

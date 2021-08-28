@@ -8,12 +8,9 @@ import { Layer } from 'react-konva';
 function TempLayer(props) {
     const { toolState } = props;
     
-    const toolContent = () => {
-        return toolState && toolState.getElement();
-    };
     return toolState ? (
             <Layer>
-                {toolContent()}
+                {toolState.render()}
             </Layer>
         ) : null;
 }

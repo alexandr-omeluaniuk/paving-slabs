@@ -56,8 +56,6 @@ function DrawStage(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [toolState]);
     
-    
-    console.log('render');
     return (
             <Stage width={stageWidth} height={stageHeight} onMouseUp={onStageMouseUp} onMouseMove={onStageMouseMove}>
                 <PersistLayer content={content}/>
