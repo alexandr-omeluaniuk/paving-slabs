@@ -2,11 +2,10 @@ import React, { useEffect } from 'react';
 import { Stage } from 'react-konva';
 import ToolsPanel from './ToolsPanel';
 import DrawLayer from './DrawLayer';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,15 +20,29 @@ const useStyles = makeStyles(theme => ({
         flex: 1
     },
     stageContainer: {
-        flex: 1
+        flex: 1,
+        borderRadius: `${theme.spacing(1)}px`,
+        border: '1px solid #e2e2e2',
+        padding: theme.spacing(1)
     }
 }));
 
 function CAD() {
     const classes = useStyles();
+    const theme = useTheme();
     
     const [stageWidth, setStateWidth] = React.useState(0);
     const [stageHeight, setStateHeight] = React.useState(0);
+    
+    let stageContainerRef = React.createRef();
+    
+    useEffect(() => {
+        if (stageContainerRef.current) {
+            setStateWidth(stageContainerRef.current.offsetWidth - theme.spacing(2));
+            setStateHeight(stageContainerRef.current.offsetHeight - theme.spacing(1));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [stageContainerRef.current]);
     
     return (
             <Card className={classes.root}>
@@ -38,7 +51,7 @@ function CAD() {
                 </CardHeader>
                 <CardContent className={classes.content}>
                     <ToolsPanel />
-                    <div className={classes.stageContainer}>
+                    <div className={classes.stageContainer} ref={stageContainerRef}>
                         <Stage width={stageWidth} height={stageHeight}>
                             <DrawLayer/>
                         </Stage>
