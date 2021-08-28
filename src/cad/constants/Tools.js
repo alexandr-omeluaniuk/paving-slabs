@@ -111,14 +111,26 @@ export class LineState extends State {
             if (deltaX > deltaY) {
                 const tan = deltaY / deltaX;
                 if (tan < 0.04 && tan > -0.04) {
-                    binding = <Line points={[0, startPoint.y, Number.MAX_SAFE_INTEGER, startPoint.y]} 
-                            key={2} strokeWidth={.2} stroke={'green'}/>;
+                    binding = (
+                            <React.Fragment>
+                                <Line points={[0, startPoint.y, Number.MAX_SAFE_INTEGER, startPoint.y]} 
+                                    key={11} strokeWidth={.2} stroke={'green'}/>
+                                <Line points={[startPoint.x, Number.MIN_SAFE_INTEGER, startPoint.x, Number.MAX_SAFE_INTEGER]} 
+                                    key={10} strokeWidth={.2} stroke={'blue'}/>
+                            </React.Fragment>
+                    );
                 }
             } else {
                 const tan = deltaX / deltaY;
                 if (tan < 0.04 && tan > -0.04) {
-                    binding = <Line points={[startPoint.x, Number.MIN_SAFE_INTEGER, startPoint.x, Number.MAX_SAFE_INTEGER]} 
-                            key={3} strokeWidth={.2} stroke={'green'}/>;
+                    binding = (
+                            <React.Fragment>
+                                <Line points={[0, startPoint.y, Number.MAX_SAFE_INTEGER, startPoint.y]} 
+                                    key={20} strokeWidth={.2} stroke={'green'}/>
+                                <Line points={[startPoint.x, Number.MIN_SAFE_INTEGER, startPoint.x, Number.MAX_SAFE_INTEGER]} 
+                                    key={21} strokeWidth={.2} stroke={'blue'}/>
+                            </React.Fragment>
+                    );
                 }
             }
         }
