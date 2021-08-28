@@ -62,9 +62,8 @@ export class LineState extends State {
     
     getElement() {
         let binding = this._getBinding();
-        console.log(binding);
         if (binding) {
-            console.log('FIRE');
+            
         } else {
             return this._getLine();
         }
@@ -87,20 +86,26 @@ export class LineState extends State {
     
     _getBinding() {
         let binding = null;
+        let secondCoord = null;
         if (this.tempCoord) {
-            const lastPoint = this.points[this.points.length - 1];
-            let deltaX = this.tempCoord.x - lastPoint.x;
-            let deltaY = this.tempCoord.y - lastPoint.y;
+            secondCoord = this.tempCoord;
+        } else if (this.points.length > 1) {
+            secondCoord = this.points[this.points.length - 1];
+        }
+        if (secondCoord) {
+            const startPoint = this.points[0];
+            let deltaX = secondCoord.x - startPoint.x;
+            let deltaY = secondCoord.y - startPoint.y;
             if (deltaX > deltaY) {
                 const tan = deltaY / deltaX;
                 if (tan < 0.04 && tan > -0.04) {
-                    binding = <Line points={[0, lastPoint.y, Number.MAX_SAFE_INTEGER, lastPoint.y]} 
+                    binding = <Line points={[0, startPoint.y, Number.MAX_SAFE_INTEGER, startPoint.y]} 
                             key={2} strokeWidth={.2} stroke={'green'}/>;
                 }
             } else {
                 const tan = deltaX / deltaY;
                 if (tan < 0.04 && tan > -0.04) {
-                    binding = <Line points={[lastPoint.x, Number.MIN_SAFE_INTEGER, lastPoint.x, Number.MAX_SAFE_INTEGER]} 
+                    binding = <Line points={[startPoint.x, Number.MIN_SAFE_INTEGER, startPoint.x, Number.MAX_SAFE_INTEGER]} 
                             key={3} strokeWidth={.2} stroke={'green'}/>;
                 }
             }
