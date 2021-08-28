@@ -20,9 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 function ToolsPanel(props) {
     const classes = useStyles();
-    const { onToolSelected, tool, toolState } = props;
-    console.log(tool);
-    console.log(toolState);
+    const { onToolSelected, tool } = props;
     return (
             <div className={classes.root}>
                 <Tooltip title={'Линия'}>

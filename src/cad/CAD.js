@@ -54,12 +54,22 @@ function CAD() {
     };
     
     const onStageMouseUp = (e) => {
-        if (tool === LINE) {
+        console.log(e);
+        if (tool && e.target && e.target.getPointerPosition) {
+            if (tool === LINE) {
+                const coords = e.target.getPointerPosition();
+                toolState.points.push(coords);
+                setToolState(toolState.clone());
+            }
+        }
+    };
+    
+    const onStageMouseMove = (e) => {
+        if (tool && e.target && e.target.getPointerPosition) {
             const coords = e.target.getPointerPosition();
-            if (!toolState.startPoint) {
-                toolState.startPoint = coords;
-            } else {
-                toolState.endPoint = coords;
+            if (tool === LINE) {
+                toolState.tempCoord = coords;
+                setToolState(toolState.clone());
             }
         }
     };
@@ -82,8 +92,8 @@ function CAD() {
                 <CardContent className={classes.content}>
                     <ToolsPanel onToolSelected={onToolSelected} tool={tool} toolState={toolState}/>
                     <div className={stageContainerStyleStyle} ref={stageContainerRef}>
-                        <Stage width={stageWidth} height={stageHeight} onMouseUp={onStageMouseUp}>
-                            <DrawLayer/>
+                        <Stage width={stageWidth} height={stageHeight} onMouseUp={onStageMouseUp} onMouseMove={onStageMouseMove}>
+                            <DrawLayer toolState={toolState}/>
                         </Stage>
                     </div>
                 </CardContent>

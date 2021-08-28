@@ -6,13 +6,25 @@
 import React from 'react';
 import { Layer, Rect, Circle, Line } from 'react-konva';
 
-function DrawLayer() {
+function DrawLayer(props) {
+    const { toolState } = props;
     
-    const [content, setContent] = React.useState(null);
+    const [content, setContent] = React.useState([]);
+    
+    const createContent = () => {
+        const result = [];
+        content.forEach(c => {
+            result.push(c);
+        });
+        if (toolState && toolState.getElement()) {
+            result.push(toolState.getElement());
+        }
+        return result;
+    };
     
     return (
             <Layer>
-                {content}
+                {createContent()}
             </Layer>
     );
 }
