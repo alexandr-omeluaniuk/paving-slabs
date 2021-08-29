@@ -46,11 +46,13 @@ export class CAD {
             const wheelDeltaY = e.evt.wheelDeltaY;
             if (wheelDeltaX > wheelDeltaY) {
                 const newScale = stageScale - this.scaleStep;
-                stageScale = newScale > 0 ? newScale : stageScale;
+                stageScale = newScale >= 40 ? newScale : stageScale;
             } else {
-                stageScale = stageScale + this.scaleStep;
+                const newScale = stageScale + this.scaleStep;
+                stageScale = newScale <= 1000 ? newScale : stageScale;
             }
-            stageScale = parseFloat(stageScale).toFixed(2);
+            stageScale = Math.round(stageScale);
+            console.log(stageScale);
             this.stage.scale({ x: stageScale / 100, y: stageScale / 100 });
             this._renderGrid();
         });
@@ -78,12 +80,12 @@ export class CAD {
         const stageSize = this.stage.size();
         const height = stageSize.height;
         const width = stageSize.width;
-        const fontSize = 10 * scaleRatio;
+        const fontSize = 12 * scaleRatio;
         // draw horizontal lines
-        const xStart = centerY;
-        const xEnd = (height + centerY);
-        const hLineStartX = centerX * scaleRatio;
-        const hLineEndX = (centerX + width) * scaleRatio;
+        const xStart = Math.ceil(centerY * scaleRatio);
+        const xEnd = Math.ceil((height + centerY) * scaleRatio);
+        const hLineStartX = Math.ceil(centerX * scaleRatio);
+        const hLineEndX = Math.ceil((centerX + width) * scaleRatio);
         //console.log(stageScale + ": " + xStart + ' | ' + xEnd);
         for (let i = xStart; i < xEnd; i++) {
             if (i % STEP === 0) {
@@ -96,7 +98,7 @@ export class CAD {
                 }));
                 if (!(centerX === 0 && i === 0)) {
                     this.grid.add(new Konva.Text({
-                        x: hLineStartX,
+                        x: hLineStartX + 2,
                         y: i + 2,
                         text: i / this.scale,
                         fontSize: fontSize,
@@ -116,10 +118,10 @@ export class CAD {
             }
         }
         // draw vertical lines
-        const yStart = centerX;
-        const yEnd = (width + centerX);
-        const vLineStartY = centerY * scaleRatio;
-        const vLineEndY = (centerY + height) * scaleRatio;
+        const yStart = Math.ceil(centerX * scaleRatio);
+        const yEnd = Math.ceil((width + centerX) * scaleRatio);
+        const vLineStartY = Math.ceil(centerY * scaleRatio);
+        const vLineEndY = Math.ceil((centerY + height) * scaleRatio);
         //console.log(stageScale + ": " + yStart + ' | ' + yEnd);
         for (let i = yStart; i < yEnd; i++) {
             if (i % STEP === 0) {
@@ -133,7 +135,7 @@ export class CAD {
                 if (!(centerY === 0 && i === 0)) {
                     this.grid.add(new Konva.Text({
                         x: i + 2,
-                        y: vLineStartY,
+                        y: vLineStartY + 2,
                         text: i / this.scale,
                         fontSize: fontSize,
                         fontFamily: 'Roboto,Calibri',
