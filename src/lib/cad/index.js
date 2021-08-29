@@ -19,15 +19,12 @@ export class CAD {
         options = options ? options : {};
         this.scale = options.initialScale ? options.initialScale : 100; // px in 1 meter
         this.scaleStep = options.scaleStep ? options.scaleStep : 10;    // in percents
-        this.stageScale = 100;
-        this.width = width;
-        this.height = height;
         this.stage = new Konva.Stage({
             container: containerId,
             width: width,
             height: height,
             draggable: true,
-            scale: this.scale
+            scale: { x: 1, y: 1}
         });
         this.stage.x(this.scale / 2);
         this.stage.y(this.scale / 2);
@@ -43,17 +40,19 @@ export class CAD {
             this._renderGrid();
         });
         this.stage.on('wheel', (e) => {
+            let stageScale = this.stage.scaleX() * 100;
             e.evt.preventDefault();
-                const wheelDeltaX = e.evt.wheelDeltaX;
-                const wheelDeltaY = e.evt.wheelDeltaY;
-                if (wheelDeltaX > wheelDeltaY) {
-                    const newScale = this.stageScale - this.scaleStep;
-                    this.stageScale = newScale > 0 ? newScale : this.stageScale;
-                } else {
-                    this.stageScale = this.stageScale + this.scaleStep;
-                }
-                this.stage.scale({ x: this.stageScale / 100, y: this.stageScale / 100 });
-                this._renderGrid();
+            const wheelDeltaX = e.evt.wheelDeltaX;
+            const wheelDeltaY = e.evt.wheelDeltaY;
+            if (wheelDeltaX > wheelDeltaY) {
+                const newScale = stageScale - this.scaleStep;
+                stageScale = newScale > 0 ? newScale : stageScale;
+            } else {
+                stageScale = stageScale + this.scaleStep;
+            }
+            stageScale = parseFloat(stageScale).toFixed(2);
+            this.stage.scale({ x: stageScale / 100, y: stageScale / 100 });
+            this._renderGrid();
         });
     }
 
@@ -74,12 +73,15 @@ export class CAD {
             this.grid.removeChildren();
         }
         // init canvas dimensions
-        const height = this.height;
-        const width = this.width;
+        const stageScale = this.stage.scaleX();
+        const stageSize = this.stage.size();
+        const height = stageSize.height;
+        const width = stageSize.width;
+        const fontSize = 10 * (1 / stageScale);
         // draw horizontal lines
         const xStart = centerY;
         const xEnd = (height + centerY);
-        console.log(this.stageScale + ": " + xStart + ' | ' + xEnd);
+        console.log(stageScale + ": " + xStart + ' | ' + xEnd);
         for (let i = xStart; i < xEnd; i++) {
             if (i % STEP === 0) {
                 this.grid.add(new Konva.Line({
@@ -94,7 +96,7 @@ export class CAD {
                         x: centerX,
                         y: i + 2,
                         text: i / this.scale,
-                        fontSize: 10,
+                        fontSize: fontSize,
                         fontFamily: 'Roboto,Calibri',
                         fill: 'blue'
                     }));
@@ -112,7 +114,8 @@ export class CAD {
         }
         // draw vertical lines
         const yStart = centerX;
-        const yEnd = width + centerX;
+        const yEnd = (width + centerX);
+        //console.log(stageScale + ": " + yStart + ' | ' + yEnd);
         for (let i = yStart; i < yEnd; i++) {
             if (i % STEP === 0) {
                 this.grid.add(new Konva.Line({
@@ -127,7 +130,7 @@ export class CAD {
                         x: i + 2,
                         y: centerY,
                         text: i / this.scale,
-                        fontSize: 10,
+                        fontSize: fontSize,
                         fontFamily: 'Roboto,Calibri',
                         fill: 'blue'
                     }));
