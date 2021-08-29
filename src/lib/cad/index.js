@@ -19,8 +19,6 @@ export class CAD {
         this.scale = initialScale;
         this.width = width;
         this.height = height;
-        this.centerX = 0;
-        this.centerY = 0;
         this.stage = new Konva.Stage({
             container: containerId,
             width: width,
@@ -35,20 +33,14 @@ export class CAD {
     }
     
     _initDragStageListeners() {
-        this.stage.on('dragstart', (e) => {
-            const coords = e.target.getPointerPosition();
-            this._dragStartCoords = coords;
-        });
         this.stage.on('dragend', (e) => {
-            const coordsEnd = e.target.getPointerPosition();
-            const coordsStart = this._dragStartCoords;
-            this.centerX = this.centerX + (coordsStart.x - coordsEnd.x);
-            this.centerY = this.centerY + (coordsStart.y - coordsEnd.y);
             this._renderGrid();
         });
     }
 
     _renderGrid() {
+        const centerX = this.stage.x() * -1;
+        const centerY = this.stage.y() * -1;
         const STEP = this.scale;
         const STEP_AUX = STEP / 10;
         const GRID_LINE_MAIN_WIDTH = .2;
@@ -64,27 +56,29 @@ export class CAD {
             this.grid.removeChildren();
         }
         // draw horizontal lines
-        const xStart = SHIFT;
-        const xEnd = this.height;
-        for (let i = xStart; i < xEnd; i += STEP) {
-            this.grid.add(new Konva.Line({
-                points: [this.centerX, i, this.centerX + this.width, i],
-                stroke: 'blue',
-                strokeWidth: GRID_LINE_MAIN_WIDTH,
-                lineCap: 'round',
-                lineJoin: 'round'
-            }));
-            this.grid.add(new Konva.Text({
-                x: this.centerX,
-                y: i + 2,
-                text: (i - SHIFT) / 100,
-                fontSize: 10,
-                fontFamily: 'Roboto,Calibri',
-                fill: 'blue'
-            }));
-            for (let j = i; j < i + STEP; j += STEP_AUX) {
+        const xStart = SHIFT + centerY;
+        const xEnd = this.height + centerY;
+        for (let i = xStart; i < xEnd; i++) {
+            if (i % STEP === 0) {
                 this.grid.add(new Konva.Line({
-                    points: [this.centerX, j, this.centerX + this.width, j],
+                    points: [centerX, i, centerX + this.width, i],
+                    stroke: 'blue',
+                    strokeWidth: GRID_LINE_MAIN_WIDTH,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }));
+                this.grid.add(new Konva.Text({
+                    x: centerX,
+                    y: i + 2,
+                    text: i / this.scale,
+                    fontSize: 10,
+                    fontFamily: 'Roboto,Calibri',
+                    fill: 'blue'
+                }));
+            }
+            if (i % STEP_AUX === 0 && i % STEP !== 0) {
+                this.grid.add(new Konva.Line({
+                    points: [centerX, i, centerX + this.width, i],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
@@ -93,27 +87,29 @@ export class CAD {
             }
         }
         // draw vertical lines
-        const yStart = SHIFT;
-        const yEnd = this.width;
-        for (let i = yStart; i < yEnd; i += STEP) {
-            this.grid.add(new Konva.Line({
-                points: [i, this.centerY, i, this.centerY + this.height],
-                stroke: 'blue',
-                strokeWidth: GRID_LINE_MAIN_WIDTH,
-                lineCap: 'round',
-                lineJoin: 'round'
-            }));
-            this.grid.add(new Konva.Text({
-                x: i + 2,
-                y: this.centerY,
-                text: (i - SHIFT) / 100,
-                fontSize: 10,
-                fontFamily: 'Roboto,Calibri',
-                fill: 'blue'
-            }));
-            for (let j = i; j < i + STEP && j < this.width; j += STEP_AUX) {
+        const yStart = SHIFT + centerX;
+        const yEnd = this.width + centerX;
+        for (let i = yStart; i < yEnd; i++) {
+            if (i % STEP === 0) {
                 this.grid.add(new Konva.Line({
-                    points: [j, this.centerY, j, this.centerY + this.height],
+                    points: [i, centerY, i, centerY + this.height],
+                    stroke: 'blue',
+                    strokeWidth: GRID_LINE_MAIN_WIDTH,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }));
+                this.grid.add(new Konva.Text({
+                    x: i + 2,
+                    y: centerY,
+                    text: i / this.scale,
+                    fontSize: 10,
+                    fontFamily: 'Roboto,Calibri',
+                    fill: 'blue'
+                }));
+            }
+            if (i % STEP_AUX === 0 && i % STEP !== 0) {
+                this.grid.add(new Konva.Line({
+                    points: [i, centerY, i, centerY + this.height],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
