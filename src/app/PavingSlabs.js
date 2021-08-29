@@ -54,7 +54,8 @@ function PavingSlabs() {
             const instance = new CAD(
                 stageContainerRef.current.offsetWidth,
                 stageContainerRef.current.offsetHeight,
-                CAD_CONTAINER_ID
+                CAD_CONTAINER_ID,
+                100
             );
             setCad(instance);
         }
