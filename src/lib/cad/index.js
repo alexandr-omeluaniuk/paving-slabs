@@ -31,7 +31,9 @@ export class CAD {
         this._initStageListeners();
         this.mainLayer = new Konva.Layer();
         this.stage.add(this.mainLayer);
-        this.toolbar = new Toolbar(containerId);
+        const container = document.querySelector('#' + containerId);
+        const canvasContent = container.querySelector('.konvajs-content');
+        canvasContent.appendChild(new Toolbar());
         this._renderGrid();
     }
     
@@ -52,7 +54,7 @@ export class CAD {
                 stageScale = newScale <= 1000 ? newScale : stageScale;
             }
             stageScale = Math.round(stageScale);
-            console.log(stageScale);
+            //console.log(stageScale);
             this.stage.scale({ x: stageScale / 100, y: stageScale / 100 });
             this._renderGrid();
         });
