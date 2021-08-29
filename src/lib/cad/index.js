@@ -25,6 +25,8 @@ export class CAD {
             height: height,
             draggable: true
         });
+        this.stage.x(this.scale / 2);
+        this.stage.y(this.scale / 2);
         this._initDragStageListeners();
         this.mainLayer = new Konva.Layer();
         this.stage.add(this.mainLayer);
@@ -119,6 +121,24 @@ export class CAD {
                     lineJoin: 'round'
                 }));
             }
+        }
+        // render coordinates origin
+        if (xStart < 0 && xEnd > 0 && yStart < 0 && yEnd > 0) {
+            console.log('FIRE');
+            this.grid.add(new Konva.Line({
+                points: [0, 0, this.scale, 0],
+                stroke: 'green',
+                strokeWidth: 1,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }));
+            this.grid.add(new Konva.Line({
+                points: [0, 0, 0, this.scale],
+                stroke: 'red',
+                strokeWidth: 1,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }));
         }
     }
 }
