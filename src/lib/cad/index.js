@@ -27,16 +27,25 @@ export class CAD {
             height: height,
             draggable: true
         });
-        this.stage.on('dragmove', (e) => {
-            const coords = e.target.getPointerPosition();
-            this.centerX = coords.x;
-            this.centerY = coords.y;
-            this._renderGrid();
-        });
+        this._initDragStageListeners();
         this.mainLayer = new Konva.Layer();
         this.stage.add(this.mainLayer);
         this.toolbar = new Toolbar(containerId);
         this._renderGrid();
+    }
+    
+    _initDragStageListeners() {
+        this.stage.on('dragstart', (e) => {
+            const coords = e.target.getPointerPosition();
+            this._dragStartCoords = coords;
+        });
+        this.stage.on('dragend', (e) => {
+            const coordsEnd = e.target.getPointerPosition();
+            const coordsStart = this._dragStartCoords;
+            this.centerX = this.centerX + (coordsStart.x - coordsEnd.x);
+            this.centerY = this.centerY + (coordsStart.y - coordsEnd.y);
+            this._renderGrid();
+        });
     }
 
     _renderGrid() {
@@ -44,7 +53,7 @@ export class CAD {
         const STEP_AUX = STEP / 10;
         const GRID_LINE_MAIN_WIDTH = .2;
         const GRID_LINE_AUX = .1;
-        const SHIFT = 10;
+        const SHIFT = 10;   // in px
         if (!this.grid) {
             this.grid = new Konva.Group({
                 x: 0,
@@ -54,16 +63,19 @@ export class CAD {
         } else {
             this.grid.removeChildren();
         }
-        for (let i = SHIFT; i < this.height; i += STEP) {
+        // draw horizontal lines
+        const xStart = SHIFT;
+        const xEnd = this.height;
+        for (let i = xStart; i < xEnd; i += STEP) {
             this.grid.add(new Konva.Line({
-                points: [0, i, this.width, i],
+                points: [this.centerX, i, this.centerX + this.width, i],
                 stroke: 'blue',
                 strokeWidth: GRID_LINE_MAIN_WIDTH,
                 lineCap: 'round',
                 lineJoin: 'round'
             }));
             this.grid.add(new Konva.Text({
-                x: 0,
+                x: this.centerX,
                 y: i + 2,
                 text: (i - SHIFT) / 100,
                 fontSize: 10,
@@ -72,7 +84,7 @@ export class CAD {
             }));
             for (let j = i; j < i + STEP; j += STEP_AUX) {
                 this.grid.add(new Konva.Line({
-                    points: [0, j, this.width, j],
+                    points: [this.centerX, j, this.centerX + this.width, j],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
@@ -80,9 +92,12 @@ export class CAD {
                 }));
             }
         }
-        for (let i = SHIFT; i < this.width; i += STEP) {
+        // draw vertical lines
+        const yStart = SHIFT;
+        const yEnd = this.width;
+        for (let i = yStart; i < yEnd; i += STEP) {
             this.grid.add(new Konva.Line({
-                points: [i, 0, i, this.height],
+                points: [i, this.centerY, i, this.centerY + this.height],
                 stroke: 'blue',
                 strokeWidth: GRID_LINE_MAIN_WIDTH,
                 lineCap: 'round',
@@ -90,7 +105,7 @@ export class CAD {
             }));
             this.grid.add(new Konva.Text({
                 x: i + 2,
-                y: 0,
+                y: this.centerY,
                 text: (i - SHIFT) / 100,
                 fontSize: 10,
                 fontFamily: 'Roboto,Calibri',
@@ -98,7 +113,7 @@ export class CAD {
             }));
             for (let j = i; j < i + STEP && j < this.width; j += STEP_AUX) {
                 this.grid.add(new Konva.Line({
-                    points: [j, 0, j, this.height],
+                    points: [j, this.centerY, j, this.centerY + this.height],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
