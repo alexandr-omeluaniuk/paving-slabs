@@ -83,7 +83,7 @@ export class CAD {
                 fontFamily: 'Calibri',
                 fill: 'blue'
             }));
-            for (let j = i; j < i + STEP; j += STEP_AUX) {
+            for (let j = i; j < i + STEP && j < this.width; j += STEP_AUX) {
                 grid.add(new Konva.Line({
                     points: [j, 0, j, this.height],
                     stroke: 'green',
