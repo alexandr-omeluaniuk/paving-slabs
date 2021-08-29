@@ -22,18 +22,19 @@ export class CAD {
         this.stage = new Konva.Stage({
             container: containerId,
             width: width,
-            height: height
+            height: height,
+            draggable: true
         });
         this.mainLayer = new Konva.Layer();
         this.stage.add(this.mainLayer);
         this.toolbar = new Toolbar(containerId);
-        this._initGrid();
+        this._renderGrid();
     }
 
-    _initGrid() {
+    _renderGrid() {
         const STEP = this.scale;
         const STEP_AUX = STEP / 10;
-        const GRID_LINE_MAIN_WIDTH = .3;
+        const GRID_LINE_MAIN_WIDTH = .2;
         const GRID_LINE_AUX = .1;
         const SHIFT = 10;
         var grid = new Konva.Group({
@@ -42,7 +43,7 @@ export class CAD {
         });
         for (let i = SHIFT; i < this.height; i += STEP) {
             grid.add(new Konva.Line({
-                points: [0, i, Number.MAX_SAFE_INTEGER, i],
+                points: [0, i, this.width, i],
                 stroke: 'blue',
                 strokeWidth: GRID_LINE_MAIN_WIDTH,
                 lineCap: 'round',
@@ -53,12 +54,12 @@ export class CAD {
                 y: i + 2,
                 text: (i - SHIFT) / 100,
                 fontSize: 10,
-                fontFamily: 'Calibri',
+                fontFamily: 'Roboto,Calibri',
                 fill: 'blue'
             }));
             for (let j = i; j < i + STEP; j += STEP_AUX) {
                 grid.add(new Konva.Line({
-                    points: [0, j, Number.MAX_SAFE_INTEGER, j],
+                    points: [0, j, this.width, j],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
@@ -68,7 +69,7 @@ export class CAD {
         }
         for (let i = SHIFT; i < this.width; i += STEP) {
             grid.add(new Konva.Line({
-                points: [i, 0, i, Number.MAX_SAFE_INTEGER],
+                points: [i, 0, i, this.height],
                 stroke: 'blue',
                 strokeWidth: GRID_LINE_MAIN_WIDTH,
                 lineCap: 'round',
@@ -84,7 +85,7 @@ export class CAD {
             }));
             for (let j = i; j < i + STEP; j += STEP_AUX) {
                 grid.add(new Konva.Line({
-                    points: [j, 0, j, Number.MAX_SAFE_INTEGER],
+                    points: [j, 0, j, this.height],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
