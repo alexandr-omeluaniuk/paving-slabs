@@ -69,7 +69,7 @@ function PavingSlabs() {
                 <CardHeader title="Калькулятор тротуарной плитки"/>
                 <CardContent className={classes.content}>
                     <div className={stageContainerStyleStyle} ref={stageContainerRef} id={CAD_CONTAINER_ID}>
-
+                        
                     </div>
                 </CardContent>
             </Card>
