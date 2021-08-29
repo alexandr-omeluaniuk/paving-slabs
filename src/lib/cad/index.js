@@ -53,6 +53,7 @@ export class CAD {
                     this.stageScale = this.stageScale + this.scaleStep;
                 }
                 this.stage.scale({ x: this.stageScale / 100, y: this.stageScale / 100 });
+                this._renderGrid();
         });
     }
 
@@ -72,13 +73,17 @@ export class CAD {
         } else {
             this.grid.removeChildren();
         }
+        // init canvas dimensions
+        const height = this.height;
+        const width = this.width;
         // draw horizontal lines
         const xStart = centerY;
-        const xEnd = this.height + centerY;
+        const xEnd = (height + centerY);
+        console.log(this.stageScale + ": " + xStart + ' | ' + xEnd);
         for (let i = xStart; i < xEnd; i++) {
             if (i % STEP === 0) {
                 this.grid.add(new Konva.Line({
-                    points: [centerX, i, centerX + this.width, i],
+                    points: [centerX, i, centerX + width, i],
                     stroke: 'blue',
                     strokeWidth: GRID_LINE_MAIN_WIDTH,
                     lineCap: 'round',
@@ -97,7 +102,7 @@ export class CAD {
             }
             if (i % STEP_AUX === 0 && i % STEP !== 0) {
                 this.grid.add(new Konva.Line({
-                    points: [centerX, i, centerX + this.width, i],
+                    points: [centerX, i, centerX + width, i],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
@@ -107,11 +112,11 @@ export class CAD {
         }
         // draw vertical lines
         const yStart = centerX;
-        const yEnd = this.width + centerX;
+        const yEnd = width + centerX;
         for (let i = yStart; i < yEnd; i++) {
             if (i % STEP === 0) {
                 this.grid.add(new Konva.Line({
-                    points: [i, centerY, i, centerY + this.height],
+                    points: [i, centerY, i, centerY + height],
                     stroke: 'blue',
                     strokeWidth: GRID_LINE_MAIN_WIDTH,
                     lineCap: 'round',
@@ -130,7 +135,7 @@ export class CAD {
             }
             if (i % STEP_AUX === 0 && i % STEP !== 0) {
                 this.grid.add(new Konva.Line({
-                    points: [i, centerY, i, centerY + this.height],
+                    points: [i, centerY, i, centerY + height],
                     stroke: 'green',
                     strokeWidth: GRID_LINE_AUX,
                     lineCap: 'round',
