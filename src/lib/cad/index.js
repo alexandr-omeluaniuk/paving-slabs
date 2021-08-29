@@ -13,30 +13,46 @@ export class CAD {
      * @param {number} width canvas width
      * @param {number} height canvas height.
      * @param {string} containerId div ID.
-     * @param {number} initialScale scale in pixels per meter.
+     * @param {number} options options.
      */
-    constructor(width, height, containerId, initialScale) {
-        this.scale = initialScale;
+    constructor(width, height, containerId, options) {
+        options = options ? options : {};
+        this.scale = options.initialScale ? options.initialScale : 100; // px in 1 meter
+        this.scaleStep = options.scaleStep ? options.scaleStep : 10;    // in percents
+        this.stageScale = 100;
         this.width = width;
         this.height = height;
         this.stage = new Konva.Stage({
             container: containerId,
             width: width,
             height: height,
-            draggable: true
+            draggable: true,
+            scale: this.scale
         });
         this.stage.x(this.scale / 2);
         this.stage.y(this.scale / 2);
-        this._initDragStageListeners();
+        this._initStageListeners();
         this.mainLayer = new Konva.Layer();
         this.stage.add(this.mainLayer);
         this.toolbar = new Toolbar(containerId);
         this._renderGrid();
     }
     
-    _initDragStageListeners() {
+    _initStageListeners() {
         this.stage.on('dragend', (e) => {
             this._renderGrid();
+        });
+        this.stage.on('wheel', (e) => {
+            e.evt.preventDefault();
+                const wheelDeltaX = e.evt.wheelDeltaX;
+                const wheelDeltaY = e.evt.wheelDeltaY;
+                if (wheelDeltaX > wheelDeltaY) {
+                    const newScale = this.stageScale - this.scaleStep;
+                    this.stageScale = newScale > 0 ? newScale : this.stageScale;
+                } else {
+                    this.stageScale = this.stageScale + this.scaleStep;
+                }
+                this.stage.scale({ x: this.stageScale / 100, y: this.stageScale / 100 });
         });
     }
 
@@ -124,7 +140,6 @@ export class CAD {
         }
         // render coordinates origin
         if (xStart < 0 && xEnd > 0 && yStart < 0 && yEnd > 0) {
-            console.log('FIRE');
             this.grid.add(new Konva.Line({
                 points: [0, 0, this.scale, 0],
                 stroke: 'green',
