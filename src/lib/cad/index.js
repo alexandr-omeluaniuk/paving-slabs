@@ -45,7 +45,6 @@ export class CAD {
         const STEP_AUX = STEP / 10;
         const GRID_LINE_MAIN_WIDTH = .2;
         const GRID_LINE_AUX = .1;
-        const SHIFT = 10;   // in px
         if (!this.grid) {
             this.grid = new Konva.Group({
                 x: 0,
@@ -56,7 +55,7 @@ export class CAD {
             this.grid.removeChildren();
         }
         // draw horizontal lines
-        const xStart = SHIFT + centerY;
+        const xStart = centerY;
         const xEnd = this.height + centerY;
         for (let i = xStart; i < xEnd; i++) {
             if (i % STEP === 0) {
@@ -67,14 +66,16 @@ export class CAD {
                     lineCap: 'round',
                     lineJoin: 'round'
                 }));
-                this.grid.add(new Konva.Text({
-                    x: centerX,
-                    y: i + 2,
-                    text: i / this.scale,
-                    fontSize: 10,
-                    fontFamily: 'Roboto,Calibri',
-                    fill: 'blue'
-                }));
+                if (!(centerX === 0 && i === 0)) {
+                    this.grid.add(new Konva.Text({
+                        x: centerX,
+                        y: i + 2,
+                        text: i / this.scale,
+                        fontSize: 10,
+                        fontFamily: 'Roboto,Calibri',
+                        fill: 'blue'
+                    }));
+                }
             }
             if (i % STEP_AUX === 0 && i % STEP !== 0) {
                 this.grid.add(new Konva.Line({
@@ -87,7 +88,7 @@ export class CAD {
             }
         }
         // draw vertical lines
-        const yStart = SHIFT + centerX;
+        const yStart = centerX;
         const yEnd = this.width + centerX;
         for (let i = yStart; i < yEnd; i++) {
             if (i % STEP === 0) {
@@ -98,14 +99,16 @@ export class CAD {
                     lineCap: 'round',
                     lineJoin: 'round'
                 }));
-                this.grid.add(new Konva.Text({
-                    x: i + 2,
-                    y: centerY,
-                    text: i / this.scale,
-                    fontSize: 10,
-                    fontFamily: 'Roboto,Calibri',
-                    fill: 'blue'
-                }));
+                if (!(centerY === 0 && i === 0)) {
+                    this.grid.add(new Konva.Text({
+                        x: i + 2,
+                        y: centerY,
+                        text: i / this.scale,
+                        fontSize: 10,
+                        fontFamily: 'Roboto,Calibri',
+                        fill: 'blue'
+                    }));
+                }
             }
             if (i % STEP_AUX === 0 && i % STEP !== 0) {
                 this.grid.add(new Konva.Line({
