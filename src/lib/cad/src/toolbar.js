@@ -17,6 +17,7 @@ export class Toolbar extends HTMLElement {
         toolbar.innerHTML = `
             <style>
                 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css");
+                @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css");
                 .cad-toolbar {
                     display: flex;
                     flex-direction: column;
@@ -24,9 +25,9 @@ export class Toolbar extends HTMLElement {
                 }
             </style>
             <div class="cad-toolbar p-2 border shadow-sm">
-                <button class="btn btn-sm btn-outline-secondary">X</button>
-                <button class="btn btn-sm btn-outline-secondary">Y</button>
-                <button class="btn btn-sm btn-outline-secondary">Z</button>
+                <button class="btn btn-sm btn-outline-secondary" title="Линия">
+                    <i class="bi bi-slash-lg"></i>
+                </button>
             </div>
         `;
         shadow.appendChild(toolbar);
