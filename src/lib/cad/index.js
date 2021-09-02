@@ -6,6 +6,7 @@
 
 import Konva from 'konva';
 import { Toolbar } from './src/toolbar';
+import { CADContext } from './src/context';
 
 export class CAD {
     /**
@@ -35,7 +36,14 @@ export class CAD {
         const canvasContent = container.querySelector('.konvajs-content');
         canvasContent.appendChild(new Toolbar());
         this._renderGrid();
+        CADContext.setCAD(this);
     }
+    
+    // ===================================================== PUBLIC =======================================================================
+    getStage() {
+        return this.stage;
+    }
+    // ===================================================== PRIVATE ======================================================================
     
     _initStageListeners() {
         this.stage.on('dragend', (e) => {

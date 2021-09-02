@@ -4,10 +4,17 @@
  * and open the template in the editor.
  */
 
+import { Line } from './tools/line';
+
+const TOOLS = {
+    Line
+};
+
 export class Toolbar extends HTMLElement {
     constructor() {
         super();
-        const shadow = this.attachShadow({mode: 'open'});
+        this._shadow = this.attachShadow({mode: 'open'});
+        this._activeTool = null;
         const toolbar = document.createElement('div');
         toolbar.style.position = 'absolute';
         toolbar.style.bottom = '6px';
@@ -25,12 +32,29 @@ export class Toolbar extends HTMLElement {
                 }
             </style>
             <div class="cad-toolbar p-2 border shadow-sm">
-                <button class="btn btn-sm btn-outline-secondary" title="Линия">
+                <button class="btn btn-sm btn-outline-secondary" title="Линия" tool-action="${Line.getName()}">
                     <i class="bi bi-slash-lg"></i>
                 </button>
             </div>
         `;
-        shadow.appendChild(toolbar);
+        this._shadow.appendChild(toolbar);
+    }
+    
+    connectedCallback() {
+        const toolButtons = this._shadow.querySelectorAll('button');
+        toolButtons.forEach(el => {
+            el.addEventListener('click', () => {
+                toolButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                el.classList.add('active');
+                this._toolButtonClick(el.getAttribute('tool-action'));
+            });
+        });
+    }
+    
+    _toolButtonClick(action) {
+        this._activeTool = new TOOLS[action]();
     }
 }
 
